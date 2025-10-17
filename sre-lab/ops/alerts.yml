@@ -1,0 +1,12 @@
+groups:
+  - name: app-alerts
+    rules:
+      - alert: HighRequestVolume
+        expr: increase(http_requests_total[1m]) > 20
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request volume"
+          description: "More than 20 requests in the last minute."
+

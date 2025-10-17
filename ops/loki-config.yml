@@ -1,0 +1,45 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  path_prefix: /loki
+  instance_addr: 0.0.0.0
+  ring:
+    kvstore:
+      store: memberlist
+  replication_factor: 1
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  schema_config:
+    configs:
+      - from: 2020-10-24
+        store: boltdb-shipper
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+  compactor:
+    working_directory: /loki/boltdb-cache
+    shared_store: filesystem
+
+memberlist:
+  bind_addr: 0.0.0.0
+  bind_port: 7946
+  join_members: []   # single-node
+
+ruler:
+  alertmanager_url: http://localhost:9093
+  storage:
+    type: local
+    local:
+      directory: /loki/rules
+  ring:
+    kvstore:
+      store: memberlist
+
